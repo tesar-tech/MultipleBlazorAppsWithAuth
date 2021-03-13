@@ -64,13 +64,13 @@ namespace MultipleBlazorAppsWithAuth.Server
             app.UseHttpsRedirection();
 
 
-            app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/FirstApp"), first =>
+            app.MapWhen(ctx => !ctx.Request.Path.StartsWithSegments("/secondapp"), first =>
             {
                 //first.UseBlazorFrameworkFiles();
                 //first.UseHttpsRedirection();
-                first.UseBlazorFrameworkFiles("/FirstApp");
+                first.UseBlazorFrameworkFiles();
                 first.UseStaticFiles();
-                first.UseStaticFiles("/FirstApp");
+                //first.UseStaticFiles("/FirstApp");
 
                 first.UseRouting();
                 first.UseIdentityServer();
@@ -79,17 +79,17 @@ namespace MultipleBlazorAppsWithAuth.Server
                 first.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
-                    endpoints.MapFallbackToFile("FirstApp/{*path:nonfile}", "FirstApp/index.html");
+                    endpoints.MapFallbackToFile("{*path:nonfile}", "index.html");
                 });
             });
 
-            app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/SecondApp"), first =>
+            app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/secondapp"), first =>
             {
                 //first.UseBlazorFrameworkFiles();
                 //first.UseHttpsRedirection();
-                first.UseBlazorFrameworkFiles("/SecondApp");
+                first.UseBlazorFrameworkFiles("/secondapp");
                 first.UseStaticFiles();
-                first.UseStaticFiles("/SecondApp");
+                first.UseStaticFiles("/secondapp");
 
                 first.UseRouting();
                 first.UseIdentityServer();
@@ -98,7 +98,7 @@ namespace MultipleBlazorAppsWithAuth.Server
                 first.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
-                    endpoints.MapFallbackToFile("SecondApp/{*path:nonfile}", "SecondApp/index.html");
+                    endpoints.MapFallbackToFile("secondapp/{*path:nonfile}", "secondapp/index.html");
                 });
             });
 

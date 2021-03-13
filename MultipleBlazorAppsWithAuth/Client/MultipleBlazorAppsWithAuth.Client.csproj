@@ -4,7 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
 
-    <StaticWebAssetBasePath>FirstApp</StaticWebAssetBasePath>
+    <!--<StaticWebAssetBasePath>FirstApp</StaticWebAssetBasePath>-->
 
   </PropertyGroup>
 

@@ -2,6 +2,8 @@
 
 I spent few hours trying to figure out how to add authentication using two Blazor WASM apps. This is a minimal sample of the working solution.
 
+[Demo app](https://blazor-multi-apps.azurewebsites.net/) on azure. 
+
 ## What is it good for?
 
 When you separate the apps, your users could face much smaller payloads (the admin section is in another app).
@@ -86,3 +88,6 @@ None of these tutorials describes how to use authentication.
 - 404 (when I forgot to reference the project)
 - and many more...
 
+### The great azure issue
+
+There is an issue with HTTPS and Azure. [SO](https://stackoverflow.com/questions/66614745/multiple-blazor-apps-same-hosting-redirecting-from-the-first-app-to-the-second) question.
