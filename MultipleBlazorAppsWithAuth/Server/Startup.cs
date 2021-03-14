@@ -32,6 +32,7 @@ namespace MultipleBlazorAppsWithAuth.Server
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
+
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -42,7 +43,11 @@ namespace MultipleBlazorAppsWithAuth.Server
                 .AddIdentityServerJwt();
 
             services.AddControllersWithViews();
-            services.AddRazorPages();
+            services.AddRazorPages().AddRazorPagesOptions(options =>
+                {
+                    //options.Conventions.AddPageRoute("/Register", "FirstApp/Register");
+                   // options.Conventions.AddPageRoute("/Identity/Account/Register", "FirstApp/Identity/Account/Register");
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,6 +69,25 @@ namespace MultipleBlazorAppsWithAuth.Server
             app.UseHttpsRedirection();
 
 
+
+            app.Use((context, next) =>
+            {
+                if (!context.Request.Path.HasValue)
+                    return next();
+                var pa = context.Request.Path.Value;
+
+                    if ((pa.Contains("favicon.ico")
+                || pa.Contains("authentication/login"))
+                )
+                    context.Request.Path = "/FirstApp" + context.Request.Path;
+
+
+                if (pa.Contains("Identity/Account") && pa.Contains("FirstApp"))
+                    context.Request.Path = pa.Replace("FirstApp/", "");
+
+                return next();
+            });
+
             app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/FirstApp"), first =>
             {
                 //first.UseBlazorFrameworkFiles();
@@ -79,7 +103,8 @@ namespace MultipleBlazorAppsWithAuth.Server
                 first.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
-                    endpoints.MapFallbackToFile("FirstApp/{*path:nonfile}", "FirstApp/index.html");
+                    //endpoints.MapFallbackToFile("FirstApp/{*path:nonfile}", "FirstApp/index.html");
+                    endpoints.MapFallbackToFile("{*path:regex(^(?!Identity/Account).*$)}", "FirstApp/index.html");
                 });
             });
 
