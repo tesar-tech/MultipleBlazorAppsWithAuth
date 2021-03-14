@@ -1,8 +1,18 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
 
 <h1>Hello, world! Client 1</h1>
 
 <a href="secondapp">Second client</a>
+<button @onclick="ToSecondClient">Second client (with forced reload)</button>
+
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+@code
+{
+    void ToSecondClient()
+    {
+        NavigationManager.NavigateTo("https://blazor-multi-apps.azurewebsites.net/secondapp", true);
+    }
+}
