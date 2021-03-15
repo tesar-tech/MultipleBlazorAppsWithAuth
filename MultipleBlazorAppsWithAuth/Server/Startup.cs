@@ -63,6 +63,26 @@ namespace MultipleBlazorAppsWithAuth.Server
 
             app.UseHttpsRedirection();
 
+            app.Use((context, next) =>
+            {
+                if (!context.Request.Path.HasValue)
+                    return next();
+
+                var pa = context.Request.Path.Value;
+                
+
+                if ((pa.Contains("favicon.ico")
+            || pa.Contains("authentication/login"))
+            )
+                    context.Request.Path = "/FirstApp" + context.Request.Path;
+
+
+                if (pa.Contains("Identity/Account") && pa.Contains("FirstApp"))
+                    context.Request.Path = pa.Replace("FirstApp/", "");
+
+                return next();
+            });
+
 
             app.MapWhen(ctx => !ctx.Request.Path.StartsWithSegments("/secondapp"), first =>
             {
@@ -78,8 +98,9 @@ namespace MultipleBlazorAppsWithAuth.Server
                 first.UseAuthorization();
                 first.UseEndpoints(endpoints =>
                 {
+                    endpoints.MapRazorPages();
                     endpoints.MapControllers();
-                    endpoints.MapFallbackToFile("{*path:nonfile}", "index.html");
+                    endpoints.MapFallbackToFile("{*path:}", "index.html");//only naked domain
                 });
             });
 
@@ -105,21 +126,21 @@ namespace MultipleBlazorAppsWithAuth.Server
 
 
 
-            app.UseBlazorFrameworkFiles();
-            app.UseStaticFiles();
+            //app.UseBlazorFrameworkFiles();
+            //app.UseStaticFiles();
 
-            app.UseRouting();
+            //app.UseRouting();
 
-            app.UseIdentityServer();
-            app.UseAuthentication();
-            app.UseAuthorization();
+            //app.UseIdentityServer();
+            //app.UseAuthentication();
+            //app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapRazorPages();
-                endpoints.MapControllers();
-                endpoints.MapFallbackToFile("index.html");
-            });
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapRazorPages();
+            //    endpoints.MapControllers();
+            //    //endpoints.MapFallbackToFile("index.html");
+            //});
         }
     }
 }
