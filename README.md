@@ -4,6 +4,10 @@ I spent few hours trying to figure out how to add authentication using two Blazo
 
 [Demo app](https://blazor-multi-apps.azurewebsites.net/) on azure. 
 
+There is also branch (master-two-slashed-apps) with the (easier) solution for /firstapp and /second app. 
+
+The master branch has naked app (/) and /second app.
+
 ## What is it good for?
 
 When you separate the apps, your users could face much smaller payloads (the admin section is in another app).
