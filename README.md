@@ -91,3 +91,11 @@ None of these tutorials describes how to use authentication.
 ### The great azure issue
 
 There is an issue with HTTPS and Azure. [SO](https://stackoverflow.com/questions/66614745/multiple-blazor-apps-same-hosting-redirecting-from-the-first-app-to-the-second) question.
+
+
+#### Favicon solution
+
+That issue is so weird. The only thing that seems to work is to change the request path from favicon (??).
+I guess it has something to do with auth request and redirecting them back to the caller (which is the first client)
+
+Anyway, it works, awaiting issues in the future.

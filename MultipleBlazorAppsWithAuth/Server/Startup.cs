@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MultipleBlazorAppsWithAuth.Server.Data;
 using MultipleBlazorAppsWithAuth.Server.Models;
+using System;
 using System.Linq;
 
 namespace MultipleBlazorAppsWithAuth.Server
@@ -69,16 +70,14 @@ namespace MultipleBlazorAppsWithAuth.Server
                     return next();
 
                 var pa = context.Request.Path.Value;
-                
+                Console.WriteLine(pa);
 
-                if ((pa.Contains("favicon.ico")
-            || pa.Contains("authentication/login"))
+                if 
+                (pa.Contains("favicon.ico")
+          
             )
-                    context.Request.Path = "/FirstApp" + context.Request.Path;
-
-
-                if (pa.Contains("Identity/Account") && pa.Contains("FirstApp"))
-                    context.Request.Path = pa.Replace("FirstApp/", "");
+                    //I am totaly unaware why, but this is the only way that make it work..
+             context.Request.Path = "/whatever" + context.Request.Path;
 
                 return next();
             });
@@ -86,11 +85,8 @@ namespace MultipleBlazorAppsWithAuth.Server
 
             app.MapWhen(ctx => !ctx.Request.Path.StartsWithSegments("/secondapp"), first =>
             {
-                //first.UseBlazorFrameworkFiles();
-                //first.UseHttpsRedirection();
                 first.UseBlazorFrameworkFiles();
                 first.UseStaticFiles();
-                //first.UseStaticFiles("/FirstApp");
 
                 first.UseRouting();
                 first.UseIdentityServer();
@@ -106,8 +102,6 @@ namespace MultipleBlazorAppsWithAuth.Server
 
             app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/secondapp"), first =>
             {
-                //first.UseBlazorFrameworkFiles();
-                //first.UseHttpsRedirection();
                 first.UseBlazorFrameworkFiles("/secondapp");
                 first.UseStaticFiles();
                 first.UseStaticFiles("/secondapp");
@@ -124,23 +118,6 @@ namespace MultipleBlazorAppsWithAuth.Server
             });
 
 
-
-
-            //app.UseBlazorFrameworkFiles();
-            //app.UseStaticFiles();
-
-            //app.UseRouting();
-
-            //app.UseIdentityServer();
-            //app.UseAuthentication();
-            //app.UseAuthorization();
-
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapRazorPages();
-            //    endpoints.MapControllers();
-            //    //endpoints.MapFallbackToFile("index.html");
-            //});
         }
     }
 }
