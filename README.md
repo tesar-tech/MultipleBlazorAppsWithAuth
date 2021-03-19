@@ -83,7 +83,7 @@ None of these tutorials describes how to use authentication.
         }
     }
     ```
-
+- Edit service-worker.published.js (see below)
 
 ## Issues I was facing
 
@@ -96,10 +96,42 @@ None of these tutorials describes how to use authentication.
 
 There is an issue with HTTPS and Azure. [SO](https://stackoverflow.com/questions/66614745/multiple-blazor-apps-same-hosting-redirecting-from-the-first-app-to-the-second) question.
 
+#### Solution with service-worker.published.js
 
-#### Favicon solution
+There were no calls to server. Even with forced reload.
+This seems like a solution: Add this line to `service-worker.published.js` 
+
+```javascript
+   && !event.request.url.includes('/secondapp');
+```  
+
+It becomes:
+
+```javascript
+async function onFetch(event) {
+    let cachedResponse = null;
+    if (event.request.method === 'GET') {
+        // For all navigation requests, try to serve index.html from cache
+        // If you need some URLs to be server-rendered, edit the following check to exclude those URLs
+        const shouldServeIndexHtml = event.request.mode === 'navigate'
+            && !event.request.url.includes('/connect/')
+            && !event.request.url.includes('/Identity/')
+            && !event.request.url.includes('/secondapp');
+
+        const request = shouldServeIndexHtml ? 'index.html' : event.request;
+        const cache = await caches.open(cacheName);
+        cachedResponse = await cache.match(request);
+    }
+
+    return cachedResponse || fetch(event.request);
+}
+``` 
+
+[GH issue](https://github.com/dotnet/aspnetcore/issues/25430#issuecomment-711151687) that helped me with this.
+
+#### [not working] Favicon solution 
+
+**Probably not correct (uff).** 
 
 That issue is so weird. The only thing that seems to work is to change the request path from favicon (??).
 I guess it has something to do with auth request and redirecting them back to the caller (which is the first client)
-
-Anyway, it works, awaiting issues in the future.

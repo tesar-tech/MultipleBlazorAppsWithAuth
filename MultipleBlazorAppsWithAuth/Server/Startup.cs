@@ -72,12 +72,12 @@ namespace MultipleBlazorAppsWithAuth.Server
                 var pa = context.Request.Path.Value;
                 Console.WriteLine(pa);
 
-                if 
-                (pa.Contains("favicon.ico")
+            //    if 
+            //    (pa.Contains("favicon.ico")
           
-            )
+            //)
                     //I am totaly unaware why, but this is the only way that make it work..
-             context.Request.Path = "/whatever" + context.Request.Path;
+             //context.Request.Path = "/whatever" + context.Request.Path;
 
                 return next();
             });
